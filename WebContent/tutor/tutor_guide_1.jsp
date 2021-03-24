@@ -1,17 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"
+    import="com.one_day_class.vo.*"%>
+<%
+	SessionVO svo=(SessionVO)session.getAttribute("svo");%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>탈멍 :: tutor_guide</title>
 <link rel="stylesheet" href="http://localhost:9000/One_day_class/css/yj.css">
 <script
 	src="http://localhost:9000/One_day_class/js_yj/jquery-3.5.1.min.js"></script>
 </head>
 <body>
 	<!--  header  -->
-	<jsp:include page="../header.jsp" />
+	<% if(svo != null) { %>
+		<% if(svo.getIdentity().equals("튜터")) { %>
+			<jsp:include page="../header_tutor.jsp" />
+		<% } else if(svo.getIdentity().equals("튜티")) {%>
+			<jsp:include page="../header_login.jsp" />
+	<% } %>
+	<% } else {%>
+		<jsp:include page="../header.jsp" />
+	<% } %>
 
 	<!--  content  -->
 	<div class="content">
@@ -38,7 +49,10 @@
 							<div class="cir">
 								<img src="https://front-img.taling.me/Content/Images/guide/myPage/icon_class_view_01.png" style="width:45px">
 							</div>
-						수업소개 완성도
+						위시리스트
+						<div class="detail_1">
+							위시리스트에 많이 등록된 수업은 노출도가 상승합니다.
+						</div>
 						</div>
 					</div>
 					<div class="bar"></div>
@@ -47,7 +61,10 @@
 							<div class="cir" >
 								<img src="https://front-img.taling.me/Content/Images/guide/myPage/icon_class_view_02.png" style="width:51px">
 							</div>
-						날짜-시간 설정여부
+						시간 설정여부
+						<div class="detail_1">
+							최근 등록된 수업은 노출도가 상승합니다.
+						</div>
 						</div>
 					</div>
 					<div class="bar"></div>
@@ -57,72 +74,10 @@
 								<img src="https://front-img.taling.me/Content/Images/guide/myPage/icon_class_view_03.png" style="width:51px">
 							</div>
 						리뷰 비율
+						<div class="detail_1">
+							리뷰가 많이 등록된 수업의 경우 노출도가 상승합니다.
 						</div>
-					</div>
-				</div>
-			</div>
-			<div class="title-box">
-				<h2 style="margin-bottom:16px">세부점수<span class="info">3가지 항목 개별 점수</span>
-					<select class="class-option" onChange="fnSelectTitle(this);" style="margin-bottom:10px;">
-												<option selected value="30842">누구나 할 수 있는 컴퓨터 프로그래밍</option>
-											</select>
-				</h2>
-			</div>
-			<!--그래프 박스 시작-->
-			<div class="chart-box_pc grid">
-				<div class="graph-box">
-					<div class="graph">
-						<div class="chart" style="background:none;">
 						</div>
-						<div id="donutchart_g" style="width:230px; height:230px;margin-top:-40px;margin-left:50px;"></div>
-													<div style="font-weight:bold;color:#000;position:absolute;margin-top:-124px;width:83px;text-align:center;font-size:20px;margin-left:124px">평가전</div>
-							<input type="hidden" id="Score1" value="0">
-												
-					</div>
-					<div class="text" style="color: #888;">
-						<div class="title">
-							수업소개 완성도
-						</div>
-						작성하신 수업에 대해서<br> 검토단의 PASS를 반드시 받아야 합니다.<br>
-						PASS이후 다른 가점은 존재하지 않습니다.
-					</div>
-				</div>
-				<div class="graph-box">
-					<div class="graph">
-						<div class="chart">
-						</div>
-						<div id="donutchart_b" style="width:230px; height:230px;margin-top:-40px;margin-left:50px;"></div>
-						<div style="font-weight:bold;color:#000;position:absolute;margin-top:-136px;width:83px;text-align:center;font-size:20px;line-height:1.2;letter-spacing:-0.5px;margin-left:122px"><span style="font-size:20px;font-weight:400;">
-						<span style="font-size:15px;line-height:1.4">수업일자를<br>설정해주세요</span></span>							
-						</div>
-						<input type="hidden" id="Score2" value="100">				
-					</div>
-					<div class="text" style="color: #888;">
-						<div class="title">
-							날짜-시간
-						</div>
-						설정하신 날짜-시간과 가까운 순서대로<br>
-						가점을 얻게 됩니다.
-						수업까지 2주 남은 <br>순간부터는 더 많은 가점을
-						받습니다.
-					</div>
-				</div>
-				<div class="graph-box">
-					<div class="graph">
-						<div class="chart">
-						</div>
-						<div id="donutchart_y" style="width:230px; height:230px;margin-top:-40px;margin-left:50px;"></div>
-						<div style="font-weight:bold;color:#000;position:absolute;margin-top:-145px;width:83px;text-align:center;font-size:40px;overflow:visible;margin-left:130px;">0<span style="font-size:20px;font-weight:400;">%</span></div>
-												<input type="hidden" id="Score3" value="0">
-											</div>
-					<div class="text" style="color: #888;">
-						<div class="title">
-							리뷰 비율
-						</div>
-						리뷰는 실제 수업 진행 인원에게<br> 25% 이상을 
-						받아야 합니다. <br>
-						신청 수가 0인 경우 25%를  충족한 것으로
-						산정합니다. 
 					</div>
 				</div>
 			</div>

@@ -801,6 +801,7 @@ img, fieldset, iframe {
     border-radius: 4px;
     padding: 12px 20px;
     display: inline-block;
+    margin-bottom:10px;
 } 
 .tutor_cont .box .title .gray8 {
     line-height: 1.29;
@@ -1338,6 +1339,10 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, form, fieldset, p, button
     height: 160px;
     font-size: 19px;
     letter-spacing: -0.5px;
+    margin-bottom: 20px;
+}
+.container.info-page .icon-box.refund .box .cir-box .under {
+   margin-top: 20px;
 }
 .container.info-page .icon-box.refund .box .cir {
     width: 130px;
@@ -1556,11 +1561,10 @@ a:visited {
 a:link {
     color: #000;
     text-decoration: none;
+    z-index:200;
 }
 .main3_cont .cate_list ul li:last-child {
     width: 4%;
-    border-left: 1px solid #c9c9c9;
-    border-right: 1px solid #c9c9c9;
 }
 .main3_cont .cate_list ul li:last-child img:first-child {
     display: block;
@@ -1579,17 +1583,14 @@ a:link {
     box-sizing: border-box;
     overflow: hidden;
     /* border-top: none; */
-    z-index: 1000;
     margin-top: -1px;
+    margin-bottom: 20px;
 }
 .main3_cont .catesub_list {
     position: static;
-    height: 217px;
+    height: 73px;
     z-index: 10;
 }
- .main3_cont .catesub_list.cates {
-    position: absolute;
-} 
 .main3_cont .catesub_list .main {
     width: 1180px;
     margin: 0 auto;
@@ -1693,7 +1694,7 @@ a:link {
     margin:auto;
 }
 .cont2 .cont2_class {
-    height: 450px;
+    height: 410px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     width: calc(40%);
@@ -1745,8 +1746,11 @@ a:link {
     margin-left: 290px;
     position: absolute;
     height: 180px;
-    margin-top: 75px;
+    margin-top: 35px;
     text-align: center;
+}
+profile_box{
+	
 }
 .cont2 .cont2_class .profile {
     width: 55px;
@@ -1767,15 +1771,15 @@ a:link {
     width: 64%;
     margin-left: 5%;
     margin-top: 20px;
-    height: 40px;
-    font-size: 14px;
+    height: 43px;
+    font-size: 16px;
     overflow: hidden;
     color: black;
     font-weight: bold;
     line-height: 1.4;
 }
 .cont2 .cont2_class .price {
-    margin-top: 90px;
+    margin-top: 75px;
     padding: 0 0 0px 15px;
 }
 .cont2 .cont2_class .price .sale {
@@ -1803,7 +1807,7 @@ a:link {
     display: inline;
 }
 .cont2 .cont2_class .info .info2 {
-    padding: 35px 5px 5px 5px;
+    padding: 10px 5px 5px 5px;
     overflow: hidden;
     padding-left: 15px;
     position: absolute;
@@ -1881,4 +1885,39 @@ a:link {
 .tutor_cont .verify img {
     vertical-align: middle;
     margin-bottom: 3px;
+}
+.regionSub{
+	padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+/* 12-16 */
+.cover_img {
+    width: 120px;
+    margin-right: 23.5px;
+    float: left;
+    height: 79.7px;
+    box-sizing: border-box;
+    margin-top: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+#ampaginationsm{
+	text-align:center;
+}
+#text_plus_btn{
+	color: #fff;
+    background: #555;
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 12px 20px;
+    display: inline-block;
+}
+.detail_1{
+	padding:20px 0px;
 }

@@ -1,16 +1,51 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="com.one_day_class.dao.*, com.one_day_class.vo.*, java.util.*"%>
+    pageEncoding="UTF-8" 
+    import="com.one_day_class.dao.*, com.one_day_class.vo.*, java.util.*"%>
     
 <%
-	ClassDAO dao = new ClassDAO();
-	//ArrayList<ClassVO> list = dao.getMemberList();
+	sh_TutorDAO dao_tutor = new sh_TutorDAO();
+
+	//1. 선택한 페이지값
+	String rpage = request.getParameter("rpage"); 
+	
+	//2-1. 페이지값에 따라서 star, end count 구하기
+	//1페이지(1~10), 2페이지(11~20) ...
+	int start = 0;
+	int end = 0;
+	int pageSize = 10; // 한 페이지당 출력되는 row
+	int pageCount = 1; // 전체 페이지 수 : 전체 리스트 row / 한 페이지당 출력되는 row
+	int dbCount = dao_tutor.getListCount(); // DB연동 후 전체 row 수 출력
+	int reqPage = 1; // 요청 페이지
+	
+	//2-2. 전체페이지 수 구하기
+	if(dbCount % pageSize == 0){
+		pageCount = dbCount / pageSize;
+	} else {
+		pageCount = dbCount / pageSize + 1;
+	}
+	
+	//2-3. start, end 값 구하기
+	if(rpage != null){
+		reqPage = Integer.parseInt(rpage);
+		//start = (요청페이지 - 1) * 한페이지 출력행 + 1;
+		start = (reqPage-1) * pageSize + 1;
+		end = reqPage * pageSize;
+	} else {
+		start = reqPage;
+		end = pageSize;
+	}
+
+	ArrayList<sh_TutorVO> list_tutor = dao_tutor.getTutorList(start, end);
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>member_list</title>
+<title>탈멍 :: 회원관리 - 튜터</title>
 <link rel="stylesheet" href="http://localhost:9000/One_day_class/js_sh/swiper-bundle.min.css">
+<link rel="stylesheet" href="http://localhost:9000/One_day_class/css/am-pagination.css">
+<script src="http://localhost:9000/One_day_class/js_sh/jquery-3.5.1.min.js"></script>
+<script src="http://localhost:9000/One_day_class/js_sh/am-pagination.js"></script>
 <style>
 	*{
 		box-sizing: border-box;
@@ -115,7 +150,7 @@
 	.main-section1 .section1-category li {
 	    position: relative;
 	    float: left;
-	    width: 720px;
+	    width: 360px;
 	    height: 40px;
 	    border-top: 1px #dadada solid;
 	    border-left: 1px #dadada solid;
@@ -131,22 +166,25 @@
 	    border-bottom:none;
 	    z-index: 10;
 	}
-	.main-section1 .section1-category li {
+	.main-section1 .section1-category li span{
 	    position: absolute;
 	    display: block;
-	    width: 720px;
+	    width: 357px;
 	    height: 30px;
 	    padding-top:12px;
 	    letter-spacing: -1px;
 	    font-weight: bold;
 	    text-align: center;
 	    font-size:15px;
-	    
+	    text-decoration: none;
+	    color: #666;
+	    cursor: pointer;
 	}
-	.main-section1 .section1-category .first {
+	.main-section1 .section1-category .selected span {
 	    height: 40px;
 	    color: #333;
 	    background-color: #fff;
+	    
 	}
 	.admin_content .ad_member_list {
 	    display: inline-block;
@@ -165,7 +203,7 @@
 	    height: 19px;
 	    padding-top: 5px;
 	    text-align: center;
-	    color: #999;
+	    color: black;
 	    font-size: 11px;
 	}
 	.ad_member_list .member_list_title li.title-1 {
@@ -201,9 +239,9 @@
 	    width: 820px;
 	    padding: 10px 0;
 	}
-	.ad_member_list .member_list_cont:hover {
-		background-color: lightgray;
-	}
+	/* .ad_member_list .member_list_cont:hover {
+		background-color: #e9e9e9;
+	} */
 	.ad_member_list .member_list_cont li {
 	    float: left;
 	    text-align: center;
@@ -212,6 +250,7 @@
 	}
 	.ad_member_list a {
 		display: block;
+		height: 36px;
 		text-decoration: none;
 	    color: #999;
 	}
@@ -246,7 +285,8 @@
 	.section-paging {
 	    width: 800px;
 	    height: 39px;
-	    margin-top: 30px;
+	    margin-top: 20px;
+	    text-align: center;
 	}
 	.paging-page {
 	    position: relative;
@@ -313,88 +353,18 @@
 	    position: relative;
 	    display: inline-block;
 	    float: left;
-	    margin-left: 270px;
+	    margin-left: 280px;
+	    margin-top: 40px;
 	}
 	.ad_search .ad_search_left {
 	   	display: inline-block;
 	    width: 294px;
 	    height: 23px;
 	}
-	.ad_search .list-wrap {
-	    float: left;
-	    width: 72px;
-	    height: 23px;
-	    border: 1px #ccc solid;
-	    vertical-align: top;
-	    line-height: 16px;
-	    cursor: pointer;
-	}
-	
-	.ad_search .list-wrap .section-select {
-	    width: 72px;
-	    height: 23px;
-	    margin-top: 2px;
-	    margin-left: 0;
-	}
-	.section-select ul {
-	    display: block;
-	    width: 100%;
-	    height: 100%;
-	}
-	.ad_search .list-wrap .section-select .select-optbox {
-	    height: 22px;
-	}
-	.ad_search .list-wrap .section-select .select-optbox .optbox-sel {
-	    border: 0;
-	}
-	.section-select .select-optbox a.optbox-sel {
-    	posiaion: relative;
-	    display: block;
-	    border: 1px #dfdfdf solid;
-	    z-index: 1;
-	}
-	.ad_search .list-wrap .section-select .select-optbox .optbox-sel {
-	    display: block;
-	    background-image: url(http://localhost:9000/One_day_class/images/selbox.gif);
-	    background-repeat: no-repeat;
-	    margin-right: 3px;
-	}
-	.section-select .select-optbox a .optbox-title {
-	    color: #6c6c6c;
-	    overflow: hidden;
-	}
-	.ad_search .list-wrap .section-select .optbox-list {
-	    width: 72px;
-	    margin-left: -1px;
-	    margin-top: 5px;
-	}
-	.section-select .select-optbox .optbox-list {
-	    position: absolute;
-	    display: none;
-	    width: 87px;
-	    margin-top: -1px;
-	    background-color: #fff;
-	    border-top: 1px #dfdfdf dotted;
-	    border-bottom: 1px #dfdfdf solid;
-	    border-left: 1px #dfdfdf solid;
-	    border-right: 1px #dfdfdf solid;
-	    z-index: 10;
-	}
-	.section-select .select-optbox .optbox-list a {
-		margin-top: 5px;
-		text-decoration: none;
-	}
-	.section-select .select-optbox .optbox-list a div {
-		border-bottom: 1px solid #dfdfdf;
-	}
-	.section-select a {
-	    display: block;
-	    height: 17px;
-	}
 	.ad_search .ad_search_input {
-	    width: 152px;
+	    width: 180px;
 	    height: 23px;
-	    margin-left: 4px;
+	    margin-left: 20px;
 	    padding: 3px 0 0 8px;
 	    border: 1px #cacaca solid;
 	    color: #999;
@@ -408,36 +378,32 @@
 		font-weight:bold;
 	}
 </style>
-<script src="http://localhost:9000/One_day_class/js_sh/jquery-3.5.1.min.js"></script>
 <script>
 	$(document).ready(function(){
-		$(document).on('click', '.section-select .select-optbox a.optbox-sel', function() {
-			if($(this).parent('li').children('.optbox-list').css('display') == 'none') {
-				$(this).css({backgroundPosition:'right -18px'}).parent('li').children('.optbox-list').css({display:'block'});
-			} else {
-				$(this).css({backgroundPosition:'right 0px'}).parent('li').children('.optbox-list').css({display:'none'});
-			}
-		});
-		
-		$(document).on('mouseleave', '.section-select .select-optbox', function() {
-			$(this).children('.optbox-sel').css({backgroundPosition:'right 0px'});
-			$(this).children('.optbox-list').css({display:'none'});
-		});
-		
-		$(document).on('click', '.section-select .select-optbox .optbox-list a', function() {
-			search_rel = $(this).attr('rel').split('|');
+		// 페이지 번호 및 링크
+		var pager = jQuery("#ampaginationsm").pagination({
+			maxSize: 5,
+			totals: <%=dbCount%>,
+			pageSize: <%=pageSize%>,
+			page: <%=reqPage%>,
 			
-			$(this).parents('.select-optbox').children('.optbox-sel').css({backgroundPosition:'right 0px'});
+			lastText: '&raquo;&raquo;',
+			firstText: '&laquo;&laquo;',
+			prevText: '&laquo;',
+			nextText: '&raquo;',
 			
-			$(this).parents('li').children('a').attr('rel',search_rel[0]+'|'+search_rel[1]).children('.optbox-title').text(search_rel[0]);
+			btnSize: 'sm'
 		});
 		
+		jQuery("#ampaginationsm").on('am.pagination.change',function(e){
+			$(location).attr('href','http://localhost:9000/One_day_class/admin/member_list.jsp?rpage=' + e.page); // location.href('이동페이지');
+		});
 	});
 </script>
 </head>
 <body>
 	<!-- header -->
-	<jsp:include page="../header.jsp"></jsp:include>
+	<jsp:include page="../header_tutor.jsp"></jsp:include>
 
 	<!-- content -->
 	<div class="admin_content">
@@ -449,7 +415,7 @@
 		      </div>
 		      <ul>
 		         <li><img src="http://localhost:9000/One_day_class/images/admin_list.png"><a href="notice_list_admin.jsp">공지사항/이벤트</a></li>
-		         <li><img src="http://localhost:9000/One_day_class/images/admin_list.png"><a href="#">수업관리</a></li>
+		         <li><img src="http://localhost:9000/One_day_class/images/admin_list.png"><a href="class_list.jsp">수업관리</a></li>
 		         <li><img src="http://localhost:9000/One_day_class/images/admin_list.png"><a href="member_list.jsp">회원관리</a></li>
 		      </ul>
 		   </nav>
@@ -458,7 +424,8 @@
 			<span class="main-logo">TALMUNG <span>'NEWS'</span> ROOM</span>
 			<div class="main-section1">
 				<ul class="section1-category">
-					<li class="first selected">회원관리</li>
+					<li id="first" class="selected"><a href="member_list.jsp"><span>튜터</span></a></li>
+					<li id="second"><a href="tutee_list.jsp"><span>튜티</span></a></li>
 				</ul>
 			</div>
 			<div class="ad_member_list">
@@ -473,181 +440,26 @@
 					<li class="title-8">희망수업</li>
 					<li class="title-9">가입일</li>
 				</ul>
-				<div id="member_list_main">
-					<a href="member_content.jsp">
+				<!-- 튜터 -->
+				<div id="member_list_tutor" style="display: block">
+					<% for(sh_TutorVO vo : list_tutor){ %>
+					<a href="tutor_content.jsp?email=<%=vo.getEmail()%>">
 						<ul class="member_list_cont">
-							<li class="cont-1">10</li>
-							<li class="cont-2">홍길동</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">qwe123@naver.com</li>
-							<li class="cont-5">010-1234-5678</li>
-							<li class="cont-6">20대</li>
-							<li class="cont-7">서울</li>
-							<li class="cont-8">뷰티/헬스</li>
-							<li class="cont-9">2020.12.10</li>
+							<li class="cont-1"><%=vo.getRno() %></li>
+							<li class="cont-2"><%=vo.getName() %></li>
+							<li class="cont-3"><%=vo.getGender() %></li>
+							<li class="cont-4"><%=vo.getEmail() %></li>
+							<li class="cont-5"><%=vo.getPhone() %></li>
+							<li class="cont-6"><%=vo.getAge() %></li>
+							<li class="cont-7"><%=vo.getArea() %></li>
+							<li class="cont-8"><%=vo.getHope_class() %></li>
+							<li class="cont-9"><%=vo.getRdate() %></li>
 						</ul>
 					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">9</li>
-							<li class="cont-2">박보검</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">wer22@gmail.com</li>
-							<li class="cont-5">010-2222-3333</li>
-							<li class="cont-6">40대</li>
-							<li class="cont-7">경기</li>
-							<li class="cont-8">라이프</li>
-							<li class="cont-9">2020.12.10</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">8</li>
-							<li class="cont-2">아이유</li>
-							<li class="cont-3">여자</li>
-							<li class="cont-4">sss11@naver.com</li>
-							<li class="cont-5">010-3333-1234</li>
-							<li class="cont-6">20대</li>
-							<li class="cont-7">대전,충청</li>
-							<li class="cont-8">취미/공예</li>
-							<li class="cont-9">2020.12.09</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">7</li>
-							<li class="cont-2">공유</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">zxc122@nate.com</li>
-							<li class="cont-5">010-5678-1234</li>
-							<li class="cont-6">30대</li>
-							<li class="cont-7">인천</li>
-							<li class="cont-8">액티비티</li>
-							<li class="cont-9">2020.12.02</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">6</li>
-							<li class="cont-2">김지수</li>
-							<li class="cont-3">여자</li>
-							<li class="cont-4">wwsw113@naver.com</li>
-							<li class="cont-5">010-2323-1212</li>
-							<li class="cont-6">50대</li>
-							<li class="cont-7">부산</li>
-							<li class="cont-8">외국어</li>
-							<li class="cont-9">2020.12.01</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">5</li>
-							<li class="cont-2">홍길순</li>
-							<li class="cont-3">여자</li>
-							<li class="cont-4">qwqw1212@gmail.com</li>
-							<li class="cont-5">010-3131-2223</li>
-							<li class="cont-6">10대</li>
-							<li class="cont-7">강원</li>
-							<li class="cont-8">뷰티/헬스</li>
-							<li class="cont-9">2020.11.30</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">4</li>
-							<li class="cont-2">조정석</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">sdsd22@naver.com</li>
-							<li class="cont-5">010-2222-1313</li>
-							<li class="cont-6">30대</li>
-							<li class="cont-7">광주,전라,제주</li>
-							<li class="cont-8">액티비티</li>
-							<li class="cont-9">2020.11.30</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">3</li>
-							<li class="cont-2">수지</li>
-							<li class="cont-3">여자</li>
-							<li class="cont-4">hht2323@nate.com</li>
-							<li class="cont-5">010-7722-2222</li>
-							<li class="cont-6">40대</li>
-							<li class="cont-7">경상,대구,울산</li>
-							<li class="cont-8">커리어</li>
-							<li class="cont-9">2020.11.29</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">2</li>
-							<li class="cont-2">김종민</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">ee21123@gmail.com</li>
-							<li class="cont-5">010-1313-1111</li>
-							<li class="cont-6">30대</li>
-							<li class="cont-7">서울</li>
-							<li class="cont-8">외국어</li>
-							<li class="cont-9">2020.11.28</li>
-						</ul>
-					</a>
-					<a href="member_content.jsp">
-						<ul class="member_list_cont">
-							<li class="cont-1">1</li>
-							<li class="cont-2">김쌍용</li>
-							<li class="cont-3">남자</li>
-							<li class="cont-4">ww2213@naver.com</li>
-							<li class="cont-5">010-1441-4141</li>
-							<li class="cont-6">30대</li>
-							<li class="cont-7">경기</li>
-							<li class="cont-8">라이프</li>
-							<li class="cont-9">2020.11.27</li>
-						</ul>
-					</a>
-				</div>
-			</div>
-			<div class="section-paging">
-				<div class="paging-page">
-					<a id="prev-off" class="prev-off" href="#"></a>
-					<a class="selected" href="#">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">6</a>
-					<a href="#">7</a>
-					<a href="#">8</a>
-					<a href="#">9</a>
-					<a href="#">10</a>
-					<a id="next" class="next" href="#"></a>
-				</div>
-			</div>
-			<div class="ad_search">
-				<div class="ad_search_left">
-					<div id="ad_search_wrap" class="list-wrap">
-						<div class="section-select">
-							<ul>
-								<li class="select-optbox">
-									<a class="optbox-sel" rel="전체|1" style="background-position: right 0px;">
-										<div class="optbox-title">전체</div>
-									</a>
-									<div class="optbox-list" style="height: 72px; display: none;">
-										<a class="selected" rel="전체|1">
-											<div id="list-cont">전체</div>
-										</a>
-										<a rel="튜터|2">
-											<div id="list-cont">튜터</div>
-										</a>
-										<a rel="튜티|3">
-											<div id="list-cont">튜티</div>
-										</a>
-									</div>
-								</li>
-							</ul>
-						</div>
+					<% } %>
+					<div class="section-paging">
+						<div id="ampaginationsm"></div>
 					</div>
-					<input class="ad_search_input" type="text" id="input_text" name="keyWord">
-					<button class="ad_search_btn">검색</button>
 				</div>
 			</div>
 		</section>

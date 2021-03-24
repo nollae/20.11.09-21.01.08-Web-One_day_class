@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"
+		import="com.one_day_class.vo.*"%>
+<%
+	SessionVO svo=(SessionVO)session.getAttribute("svo");%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,13 +14,21 @@
 </head>
 <body>
 	<!--  header  -->
-	<jsp:include page="../header.jsp" />
+	<% if(svo != null) { %>
+		<% if(svo.getIdentity().equals("튜터")) { %>
+			<jsp:include page="../header_tutor.jsp" />
+		<% } else if(svo.getIdentity().equals("튜티")) {%>
+			<jsp:include page="../header_login.jsp" />
+	<% } %>
+	<% } else {%>
+		<jsp:include page="../header.jsp" />
+	<% } %>
 
 	<!--  content  -->
 	<div class="content">
 		<div class="head_cont">
 			<div class="inbox">
-				<a href="http://localhost:9000/One_day_class/tutor/tutor_reg_1.jsp"><button type="button">튜터 등록 하기</button></a>
+				<a href="http://localhost:9000/One_day_class/tutor/tutor_reg_1.jsp"><button type="button">수업 등록 하기</button></a>
 			</div>
 		</div>
 		<div class="how_box">
@@ -30,9 +41,9 @@
 							src="https://front-img.taling.me/Content/Images/cont/manual_img_01.png">
 					</div>
 					<div class="step">STEP 01</div>
-					<div class="top2">튜터등록 및 심사</div>
+					<div class="top2">수업등록 및 심사</div>
 					<div class="top3">
-						수업소개를 정성스럽게<br>작성해주시면 매니저가 확인 후<br> 튜터등록을 도와드립니다.
+						수업소개를 정성스럽게<br>작성해주시면 매니저가 확인 후<br> 수업등록을 도와드립니다.
 					</div>
 				</div>
 				<div class="bar">

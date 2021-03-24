@@ -1,9 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" 
+	pageEncoding="UTF-8"
+	import="com.one_day_class.dao.*, com.one_day_class.vo.*"%>
+<%
+	SessionVO svo = (SessionVO)session.getAttribute("svo");
+	String email = svo.getEmail();
+	String type = request.getParameter("type");
+	
+	if(svo != null) {
+%>	
+	
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>mypassedit</title>
+<title>탈멍 :: 비밀번호변경</title>
 <link rel="stylesheet" href="http://localhost:9000/One_day_class/css/sh.css">
 <script src="http://localhost:9000/One_day_class/js_sh/jquery-3.5.1.min.js"></script>
 <script>
@@ -56,7 +66,9 @@
 			<div class="title_box">
 				<div class="t_name">비밀번호 재설정</div>
 			</div>
-			<form class="pass_edit_form" action="" method="POST" id="edit_password">
+			<form class="pass_edit_form" action="mypasseditProc.jsp" method="POST" id="edit_password">
+				<input type="hidden" name="email" value="<%=email%>">
+				<input type="hidden" name="type" value="<%=type%>">
 				<div class="top_box">
 					<div class="input_box">
 						<div class="left_box">
@@ -86,3 +98,8 @@
 	<jsp:include page="../footer.jsp"></jsp:include>
 </body>
 </html>
+<% } else { %>
+<script>
+	alert("로그인을 진행하셔야 접근이 가능합니다");
+</script>
+<% } %>
